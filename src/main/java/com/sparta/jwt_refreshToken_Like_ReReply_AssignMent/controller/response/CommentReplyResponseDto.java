@@ -12,11 +12,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentResponseDto {
-  private Long id;
-  private String author;
-  private String content;
-  private List<CommentReplyResponseDto> commentReplyResponseDtoList;
-  private LocalDateTime createdAt;
-  private LocalDateTime modifiedAt;
+public class CommentReplyResponseDto {
+
+    private Long id;
+    private Long commentId;
+    private String author;
+    private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+
 }

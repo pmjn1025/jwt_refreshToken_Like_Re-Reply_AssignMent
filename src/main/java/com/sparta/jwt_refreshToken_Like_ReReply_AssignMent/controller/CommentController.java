@@ -17,13 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 public class CommentController {
 
   private final CommentService commentService;
-
+  // 댓글 생성
   @RequestMapping(value = "/api/auth/comment", method = RequestMethod.POST)
   public ResponseDto<?> createComment(@RequestBody CommentRequestDto requestDto,
                                       HttpServletRequest request) {
     return commentService.createComment(requestDto, request);
   }
 
+  // 댓글 전체조회.
   @RequestMapping(value = "/api/comment/{id}", method = RequestMethod.GET)
   public ResponseDto<?> getAllComments(@PathVariable Long id) {
     return commentService.getAllCommentsByPost(id);

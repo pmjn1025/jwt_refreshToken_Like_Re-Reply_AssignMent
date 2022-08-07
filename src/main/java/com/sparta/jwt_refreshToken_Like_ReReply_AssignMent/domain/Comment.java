@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @Getter
@@ -29,6 +30,16 @@ public class Comment extends Timestamped {
 
   @Column(nullable = false)
   private String content;
+
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CommentReply> commentReplies;
+
+
+  public Comment(List<CommentReply> commentReplyList){
+
+    this.commentReplies = commentReplyList;
+
+  }
 
   public void update(CommentRequestDto commentRequestDto) {
     this.content = commentRequestDto.getContent();

@@ -2,19 +2,17 @@ package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.service;
 
 
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.CommentRequestDto;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentReplyResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto;
-
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto1;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.ResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Comment;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.CommentReply;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Member;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Post;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.jwt.TokenProvider;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.CommentReplyRepository;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.CommentRepository;
-
-
-
-
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +27,14 @@ import java.util.Optional;
 public class CommentService {
 
   private final CommentRepository commentRepository;
+  private final CommentReplyRepository commentReplyRepository;
 
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
   @Transactional
-  public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<?> createComment(CommentRequestDto requestDto,
+                                      HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
           "로그인이 필요합니다.");
@@ -78,11 +78,17 @@ public class CommentService {
     if (null == post) {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
-
     List<Comment> commentList = commentRepository.findAllByPost(post);
-    List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+    List<CommentReply> commentReplyList = commentReplyRepository.findAllByPost(post);
+    //List<CommentReply> commentReplyList;
 
+    List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+    List<CommentReplyResponseDto> commentReplyResponseDtoList = new ArrayList<>();
+  // 코멘트 아이디 대댓글아이디가 같으면 연결하라
     for (Comment comment : commentList) {
+
+      //commentReplyList = commentReplyRepository.findAllByComment_Id(comment.getId());
+
       commentResponseDtoList.add(
           CommentResponseDto.builder()
               .id(comment.getId())
@@ -92,12 +98,70 @@ public class CommentService {
               .modifiedAt(comment.getModifiedAt())
               .build()
       );
+
+
+      }
+
+
+    for(CommentReply commentReply : commentReplyList) {
+
+      commentReplyResponseDtoList.add(
+              CommentReplyResponseDto.builder()
+                      // 코멘트 index
+                      .commentId(commentReply.getComment().getId())
+                      // 원래 대댓글 index
+                      .id(commentReply.getId())
+                      .author(commentReply.getMember().getNickname())
+                      .content(commentReply.getContent())
+                      .createdAt(commentReply.getCreatedAt())
+                      .modifiedAt(commentReply.getModifiedAt())
+                      .build()
+      );
     }
-    return ResponseDto.success(commentResponseDtoList);
+
+
+    //return ResponseDto.success(commentResponseDtoList);
+
+//    for(CommentReply commentReply : commentReplyList){
+//      commentReplyResponseDtoList.add(
+//              CommentReplyResponseDto.builder()
+//                      .id(commentReply.getId())
+//                      .author(commentReply.getMember().getNickname())
+//                      .content(commentReply.getContent())
+//                      .createdAt(commentReply.getCreatedAt())
+//                      .modifiedAt(commentReply.getModifiedAt())
+//                      .build()
+//      );
+//    }
+
+
+
+   // commentResponseDtoList.add((CommentResponseDto) commentReplyList);
+
+
+
+
+    return ResponseDto.success(
+
+                    CommentResponseDto1.builder()
+//                    .id(post.getId())
+//                    .author(post.getMember().getNickname())
+//                    .content(post.getContent())
+                    .commentResponseDtoList(commentResponseDtoList)
+                    .commentReplyResponseDtoList(commentReplyResponseDtoList)
+//                    .author(post.getMember().getNickname())
+//                    .createdAt(post.getCreatedAt())
+//                    .modifiedAt(post.getModifiedAt())
+                    .build()
+    );
+
+
   }
 
   @Transactional
-  public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<?> updateComment(Long id,
+                                      CommentRequestDto requestDto,
+                                      HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
       return ResponseDto.fail("MEMBER_NOT_FOUND",
           "로그인이 필요합니다.");
@@ -128,6 +192,9 @@ public class CommentService {
     }
 
     comment.update(requestDto);
+
+    commentRepository.save(comment);
+
     return ResponseDto.success(
         CommentResponseDto.builder()
             .id(comment.getId())

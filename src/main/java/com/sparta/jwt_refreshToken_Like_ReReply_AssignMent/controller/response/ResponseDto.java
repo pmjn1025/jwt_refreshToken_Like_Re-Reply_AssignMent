@@ -14,6 +14,10 @@ public class ResponseDto<T> {
     return new ResponseDto<>(true, data, null);
   }
 
+  public static <T> ResponseDto<T> success1(T data, T data1) {
+    return new ResponseDto<>(true, data, null);
+  }
+
   public static <T> ResponseDto<T> fail(String code, String message) {
     return new ResponseDto<>(false, null, new Error(code, message));
   }
