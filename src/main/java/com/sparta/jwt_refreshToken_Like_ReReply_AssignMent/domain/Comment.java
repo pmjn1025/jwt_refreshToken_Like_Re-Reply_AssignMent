@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert // 디폴트가 null일때 나머지만 insert
 @Entity
 public class Comment extends Timestamped {
 
@@ -33,6 +36,16 @@ public class Comment extends Timestamped {
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CommentReply> commentReplies;
+
+  @Column(name = "likes_count")
+  @ColumnDefault("0") //default 0
+  private Integer likes_count;
+
+
+  public void updatelike_count(Integer postlike_count){
+    this.likes_count = postlike_count;
+
+  }
 
 
   public Comment(List<CommentReply> commentReplyList){

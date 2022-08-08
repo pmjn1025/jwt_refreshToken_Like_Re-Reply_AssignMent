@@ -1,7 +1,5 @@
 package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain;
 
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.CommentReplyRequestDto;
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.CommentRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @DynamicInsert // 디폴트가 null일때 나머지만 insert
 @Entity
-public class CommentReply extends Timestamped{
+public class Likes {
 
     // 기본키
     @Id
@@ -25,36 +23,28 @@ public class CommentReply extends Timestamped{
     private Long id;
 
     // 외래키
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     // 외래키
     // 디폴트로 pk값을 가져온다.
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id")
     // fetch = FetchType.LAZY 지연참조
     // 다른내용을 항상 참조할 필요는 없다.
     @ManyToOne(fetch = FetchType.LAZY)
+    @ColumnDefault("0") //default 0
     private Post post;
 
-    @JoinColumn(name = "comment_id", nullable = false)
+    @JoinColumn(name = "comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @ColumnDefault("0") //default 0
     private Comment comment;
 
-    @Column(nullable = false)
-    private String content;
-
-    @Column(name = "likes_count")
+    @JoinColumn(name = "commentreply_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @ColumnDefault("0") //default 0
-    private Integer likes_count;
-
-    public void updatelike_count(Integer postlike_count){
-        this.likes_count = postlike_count;
-
-    }
-    public void update(CommentReplyRequestDto commentReplyRequestDto) {
-        this.content = commentReplyRequestDto.getContent();
-    }
+    private CommentReply commentReply;
 
     public boolean validateMember(Member member) {
         return !this.member.equals(member);

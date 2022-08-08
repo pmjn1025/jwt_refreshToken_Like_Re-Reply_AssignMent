@@ -1,10 +1,5 @@
 package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.service;
 
-
-
-
-
-
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.PostRequestDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.PostResponseDto;
@@ -16,6 +11,7 @@ import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Post;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.jwt.TokenProvider;
 
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.CommentRepository;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.LikesRepository;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +29,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
 
+  private final LikesRepository likesRepository;
   private final TokenProvider tokenProvider;
 
   @Transactional
@@ -55,6 +52,8 @@ public class PostService {
     Post post = Post.builder()
         .title(requestDto.getTitle())
         .content(requestDto.getContent())
+        .likes_count(0)
+        .comment_count(0)
         .member(member)
         .build();
 
@@ -66,6 +65,7 @@ public class PostService {
             .title(post.getTitle())
             .content(post.getContent())
             .author(post.getMember().getNickname())
+            .likes(post.getLikes_count())
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
             .build()
@@ -80,7 +80,6 @@ public class PostService {
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
-
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
     for (Comment comment : commentList) {
@@ -100,6 +99,8 @@ public class PostService {
             .id(post.getId())
             .title(post.getTitle())
             .content(post.getContent())
+            .likes(post.getLikes_count())
+            .commentCount(post.getComment_count())
             .commentResponseDtoList(commentResponseDtoList)
             .author(post.getMember().getNickname())
             .createdAt(post.getCreatedAt())
@@ -140,6 +141,7 @@ public class PostService {
     }
 
     post.update(requestDto);
+    postRepository.save(post);
     return ResponseDto.success(post);
   }
 

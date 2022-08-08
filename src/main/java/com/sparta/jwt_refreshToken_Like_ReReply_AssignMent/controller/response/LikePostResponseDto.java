@@ -12,13 +12,19 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentReplyResponseDto {
+public class LikePostResponseDto {
+
+    // 게시글 목록 response에 id, 제목, 작성자, 좋아요 개수, 대댓글 제외한 댓글 개수,
+    // 등록일, 수정일 나타내기
 
     private Long id;
-    private Long commentId;
-    private String author;
+    private String title;
     private String content;
+    private String author;
+    // 해당 게시글 좋아요 개수
     private Integer likes;
+    // 댓글개수로 수정
+    private Integer commentCount;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

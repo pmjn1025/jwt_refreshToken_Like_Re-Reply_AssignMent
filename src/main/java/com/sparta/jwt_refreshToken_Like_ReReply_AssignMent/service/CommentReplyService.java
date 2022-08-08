@@ -78,8 +78,10 @@ public class CommentReplyService {
         return ResponseDto.success(
                 CommentReplyResponseDto.builder()
                         .id(commentReply.getId())
+                        .commentId(comment.getId())
                         .author(commentReply.getMember().getNickname())
                         .content(commentReply.getContent())
+                        .likes(0)
                         .createdAt(commentReply.getCreatedAt())
                         .modifiedAt(commentReply.getModifiedAt())
                         .build()
@@ -129,6 +131,7 @@ public class CommentReplyService {
                         .commentId(commentReply.getComment().getId())
                         .author(commentReply.getMember().getNickname())
                         .content(commentReply.getContent())
+                        .likes(commentReply.getLikes_count())
                         .createdAt(commentReply.getCreatedAt())
                         .modifiedAt(commentReply.getModifiedAt())
                         .build()

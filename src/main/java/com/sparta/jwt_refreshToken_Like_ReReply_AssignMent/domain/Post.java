@@ -1,10 +1,13 @@
 package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.PostRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert // 디폴트가 null일때 나머지만 insert
 @Entity
 public class Post extends Timestamped {
 
@@ -29,6 +33,14 @@ public class Post extends Timestamped {
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
 
+  @Column(name = "likes_count")
+  @ColumnDefault("0") //default 0
+  private Integer likes_count;
+
+  @Column(name = "comment_count")
+  @ColumnDefault("0") //default 0
+  private Integer comment_count;
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
@@ -36,6 +48,17 @@ public class Post extends Timestamped {
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
     this.content = postRequestDto.getContent();
+  }
+  // 좋아요 갯수 업데이트
+  public void updatelike_count(Integer postlike_count){
+    this.likes_count = postlike_count;
+
+  }
+
+  // 댓글 갯수 업데이트
+  public void updatecomment_count(Integer comment_count){
+    this.comment_count = comment_count;
+
   }
 
   public boolean validateMember(Member member) {
