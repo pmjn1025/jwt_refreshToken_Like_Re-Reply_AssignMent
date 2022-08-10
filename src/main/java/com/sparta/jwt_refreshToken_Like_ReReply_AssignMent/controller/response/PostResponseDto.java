@@ -22,6 +22,7 @@ public class PostResponseDto {
   private String author;
   // 해당 게시글 좋아요 개수
   private Integer likes;
+  private String imgUrl;
   // 댓글개수로 수정
   private Integer commentCount;
   private List<CommentResponseDto> commentResponseDtoList;

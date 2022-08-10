@@ -32,7 +32,8 @@ public class Likes {
     @JoinColumn(name = "post_id")
     // fetch = FetchType.LAZY 지연참조
     // 다른내용을 항상 참조할 필요는 없다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @ColumnDefault("0") //default 0
     private Post post;
 

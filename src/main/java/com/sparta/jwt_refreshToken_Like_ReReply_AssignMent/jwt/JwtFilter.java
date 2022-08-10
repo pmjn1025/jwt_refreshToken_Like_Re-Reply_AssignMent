@@ -69,8 +69,9 @@ public class JwtFilter extends OncePerRequestFilter {
         );
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       }
-
-      String subject = claims.getSubject();
+//=====================================위는 JWT 파싱하는 부분========================================================================
+//=====================================아래는 JWT 복호화해서 가져온다 ================================================
+      String subject = claims.getSubject(); // 여기서 서브젝트가 나온다
       Collection<? extends GrantedAuthority> authorities =
           Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
               .map(SimpleGrantedAuthority::new)

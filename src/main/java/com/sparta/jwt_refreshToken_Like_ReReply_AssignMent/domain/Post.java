@@ -36,10 +36,15 @@ public class Post extends Timestamped {
   @Column(name = "likes_count")
   @ColumnDefault("0") //default 0
   private Integer likes_count;
+  // 꺼꾸로 되었다. 부모가 자식이 되어버렸네??
 
   @Column(name = "comment_count")
   @ColumnDefault("0") //default 0
   private Integer comment_count;
+
+  @Column(name = "imgUrl")
+  @ColumnDefault("0") //default 0
+  private String imgUrl;
 
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
@@ -48,6 +53,7 @@ public class Post extends Timestamped {
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
     this.content = postRequestDto.getContent();
+    this.imgUrl = postRequestDto.getImgUrl();
   }
   // 좋아요 갯수 업데이트
   public void updatelike_count(Integer postlike_count){

@@ -10,9 +10,12 @@ public interface LikesRepository extends JpaRepository<Likes,Long> {
     Integer countAllByCommentReply(CommentReply commentReply);
 
     void deleteByMember_IdAndPost_Id(Long memberId,Long post_id);
+    void deleteByPost(Post post);
     void deleteByMember_IdAndComment_Id(Long memberId,Long comment_id);
     void deleteByMember_IdAndCommentReply_Id(Long memberId,Long commentReply_id);
     boolean existsByMember_IdAndPost_Id(Long member_id,Long post_id);
     boolean existsByMember_IdAndComment_Id(Long member_id,Long comment_id);
     boolean existsByMember_IdAndCommentReply_Id(Long member_id,Long commentReply_id);
+
+
 }
