@@ -25,7 +25,7 @@ public class Scheduler {
 
     // 초, 분, 시, 일, 월, 주 순서
     // 확인용 30초 나중에 1시로 바꾸기
-    @Scheduled(cron = "20 * * * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     @Transactional
     public void updatePrice() throws InterruptedException {
         System.out.println("가격 업데이트 실행");
@@ -45,8 +45,10 @@ public class Scheduler {
                 // i 번째 관심 상품 정보를 업데이트합니다.
                 postRepository.deleteById(post.getId());
 //                likesRepository.deleteByPost(post);
+                log.info("게시물 <"+ post.getTitle()+">이 삭제되었습니다.");
 
                 if(like_count >=1){
+                    //log.info("게시물 <"+ post.getTitle()+">이 삭제되었습니다.");
 
                     likesRepository.deleteByPost(post);
                     // 왜 되지???

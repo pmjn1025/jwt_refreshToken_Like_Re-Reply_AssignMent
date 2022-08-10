@@ -324,6 +324,7 @@ public class LikesService {
         return ResponseDto.success(
                 CommentReplyResponseDto.builder()
                         .id(commentReply.getId())
+                        .commentId(commentReply.getComment().getId())
                         .author(commentReply.getMember().getNickname())
                         .content(commentReply.getContent())
                         .likes(commentReply.getLikes_count())
@@ -373,8 +374,9 @@ public class LikesService {
 
             // 최종 출력
             return ResponseDto.success(
-                    CommentResponseDto.builder()
+                    CommentReplyResponseDto.builder()
                             .id(commentReply.getId())
+                            .commentId(commentReply.getComment().getId())
                             .author(commentReply.getMember().getNickname())
                             .content(commentReply.getContent())
                             .likes(commentReply.getLikes_count())

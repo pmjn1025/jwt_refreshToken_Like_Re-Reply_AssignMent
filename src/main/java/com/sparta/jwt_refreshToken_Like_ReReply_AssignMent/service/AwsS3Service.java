@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.awshandler.CustomException;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.awshandler.FileSizeErrorException;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.awshandler.FileTypeErrorException;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.PostResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.ResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Images;
@@ -23,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,7 +57,7 @@ public class AwsS3Service {
         }
 
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당아이디가 없습니다.")
+                () -> new IllegalArgumentException("해당게시글이 없습니다.")
         );
 
         String imageUrl = upload(multipartFile, aStatic);
@@ -93,7 +92,27 @@ public class AwsS3Service {
 
     // 로컬에 파일 업로드 하기
     private Optional<File> convert(MultipartFile file) throws IOException {
+
+        String type = file.getContentType();
+        long size = file.getSize();
+        System.out.println("===================================="+type);
+        System.out.println("===================================="+size);
+
+        // 파일 타입 예외처리
+        if (!type.startsWith("image")) {
+
+            throw new FileTypeErrorException();
+
+        }
+        // 파일 크기 예외처리
+        if (size >=20480){
+
+            throw new FileSizeErrorException();
+        }
+
         File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
+        //File convertFile = new File(System.getProperty("image") + "/" + file.getOriginalFilename());
+
         if (convertFile.createNewFile()) { // 바로 위에서 지정한 경로에 File이 생성됨 (경로가 잘못되었다면 생성 불가능)
             try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
                 fos.write(file.getBytes());

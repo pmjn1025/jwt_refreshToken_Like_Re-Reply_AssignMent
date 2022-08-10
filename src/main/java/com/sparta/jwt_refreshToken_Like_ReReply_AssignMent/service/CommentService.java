@@ -2,10 +2,7 @@ package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.service;
 
 
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.CommentRequestDto;
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentReplyResponseDto;
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto;
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto1;
-import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.ResponseDto;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.*;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Comment;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.CommentReply;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Member;
@@ -88,8 +85,9 @@ public class CommentService {
     public ResponseDto<?> getAllCommentsByPost(Long postId) {
         Post post = postService.isPresentPost(postId);
         if (null == post) {
-            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
+            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글입니다.");
         }
+
         List<Comment> commentList = commentRepository.findAllByPost(post);
         //List<CommentReply> commentReplyList = commentReplyRepository.findAllByPost(post);
         //List<CommentReply> commentReplyList;
@@ -140,7 +138,22 @@ public class CommentService {
             );
         }
 
+
         return ResponseDto.success(commentResponseDtoList);
+//        return ResponseDto.success(
+//                PostResponseDto.builder()
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .content(post.getContent())
+//                        .imgUrl(post.getImgUrl())
+//                        .likes(post.getLikes_count())
+//                        .commentCount(post.getComment_count())
+//                        .commentResponseDtoList(commentResponseDtoList)
+//                        .author(post.getMember().getNickname())
+//                        .createdAt(post.getCreatedAt())
+//                        .modifiedAt(post.getModifiedAt())
+//                        .build()
+//        );
     }
 
     @Transactional

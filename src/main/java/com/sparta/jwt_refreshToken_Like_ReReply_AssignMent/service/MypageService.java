@@ -51,6 +51,7 @@ public class MypageService {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
         }
 
+
         List<Post> postList = postRepository.findAllByMember_Id(member.getId());
         List<PostResponseDto> postResponseDtoLike = new ArrayList<>();
         List<PostResponseDto> postResponseDtoNotLike = new ArrayList<>();
@@ -66,6 +67,7 @@ public class MypageService {
                                 .content(post.getContent())
                                 .likes(post.getLikes_count())
                                 .commentCount(post.getComment_count())
+                                .imgUrl(post.getImgUrl())
                                 //.commentResponseDtoList(commentReplyResponseDtoList)
                                 //여기서  좋아요 갯수를 가져와야 된다.
                                 // 예시 .id(commentReplyRepository.countAllByComment(commentReply.getId()))
@@ -84,6 +86,7 @@ public class MypageService {
                                 .content(post.getContent())
                                 .likes(post.getLikes_count())
                                 .commentCount(post.getComment_count())
+                                .imgUrl(post.getImgUrl())
                                 //.commentResponseDtoList(commentReplyResponseDtoList)
                                 //여기서  좋아요 갯수를 가져와야 된다.
                                 // 예시 .id(commentReplyRepository.countAllByComment(commentReply.getId()))

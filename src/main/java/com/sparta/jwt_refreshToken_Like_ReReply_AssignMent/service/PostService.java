@@ -1,15 +1,18 @@
 package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.service;
 
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.request.PostRequestDto;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentReplyResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.CommentResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.PostResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.ResponseDto;
 
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Comment;
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.CommentReply;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Member;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.domain.Post;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.jwt.TokenProvider;
 
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.CommentReplyRepository;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.CommentRepository;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.LikesRepository;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.repository.PostRepository;
@@ -28,6 +31,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
+    private final CommentReplyRepository commentReplyRepository;
 
     private final LikesRepository likesRepository;
     private final TokenProvider tokenProvider;
@@ -70,6 +75,7 @@ public class PostService {
                             .imgUrl(post.getImgUrl())
                             .author(post.getMember().getNickname())
                             .likes(post.getLikes_count())
+                            .commentCount(post.getComment_count())
                             .createdAt(post.getCreatedAt())
                             .modifiedAt(post.getModifiedAt())
                             .build()
@@ -96,6 +102,7 @@ public class PostService {
                             .imgUrl(post.getImgUrl())
                             .author(post.getMember().getNickname())
                             .likes(post.getLikes_count())
+                            .commentCount(post.getComment_count())
                             .createdAt(post.getCreatedAt())
                             .modifiedAt(post.getModifiedAt())
                             .build()
@@ -115,11 +122,35 @@ public class PostService {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
+
+            List<CommentReply> commentReplyList = commentReplyRepository.findAllByComment(comment);
+            List<CommentReplyResponseDto> commentReplyResponseDtoList = new ArrayList<>();
+
+            for (CommentReply commentReply : commentReplyList) {
+
+                commentReplyResponseDtoList.add(
+                        CommentReplyResponseDto.builder()
+                                // 코멘트 index
+                                .commentId(commentReply.getComment().getId())
+                                // 원래 대댓글 index
+                                .id(commentReply.getId())
+                                .author(commentReply.getMember().getNickname())
+                                .content(commentReply.getContent())
+                                .likes(commentReply.getLikes_count())
+                                .createdAt(commentReply.getCreatedAt())
+                                .modifiedAt(commentReply.getModifiedAt())
+                                .build()
+                );
+            }
+
+
             commentResponseDtoList.add(
                     CommentResponseDto.builder()
                             .id(comment.getId())
                             .author(comment.getMember().getNickname())
                             .content(comment.getContent())
+                            .likes(comment.getLikes_count())
+                            .commentReplyResponseDtoList(commentReplyResponseDtoList)
                             .createdAt(comment.getCreatedAt())
                             .modifiedAt(comment.getModifiedAt())
                             .build()

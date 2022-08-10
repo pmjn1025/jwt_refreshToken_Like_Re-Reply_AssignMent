@@ -1,5 +1,6 @@
 package com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller;
 
+import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.awshandler.FileTypeErrorException;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.controller.response.ResponseDto;
 import com.sparta.jwt_refreshToken_Like_ReReply_AssignMent.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,6 @@ public class ImageUploadController {
 
     }
 
+    // 여기다가 exceptionHandler 적어도 된다.
 
 }
